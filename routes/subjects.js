@@ -8,9 +8,9 @@ router.get('/classes/:classId/subjects', (req, res) => {
     const classId = parseInt(req.params.classId, 10);
   
     let subjects;
-    if (classId <= 3) { // Assuming class IDs 1, 2, 3 are for junior classes
+    if (classId <= 3) {
       subjects = juniorSubjects;
-    } else { // Assuming class IDs 4, 5, 6 are for senior classes
+    } else { 
       subjects = seniorSubjects;
     }
   

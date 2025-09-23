@@ -3,5 +3,9 @@ const classSchema = new Schema({
     type: String,
     required: true
   },
+  code: {
+    type: string,
+    required: true
+  },
   subjects: [{ type: Schema.Types.ObjectId, ref: 'Subject' }]
 });

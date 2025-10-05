@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const LessonPlanSchema = new Schema({
   title: { type: String, required: true },
   file: { type: String, required: true },
+  fileId: { type: String },
   sessionId: { type: Schema.Types.ObjectId, ref: "Session", required: true },
   termId: { type: Schema.Types.ObjectId, ref: "Term", required: true },
   classId: { type: Number, required: true },

@@ -10,11 +10,13 @@ const MongoStore = require("connect-mongo");
 const authRoutes = require("./routes/authRoutes");
 const subjectRoute = require("./routes/subjectRoute");
 const sessionRoutes = require("./routes/sessionRoutes");
-const lessonPlanRoute = require("./routes/lessonPlanRoute")
+const lessonPlanRoute = require("./routes/lessonPlanRoute");
+const commentRoutes = require("./routes/commentRoutes");
 const multer = require("multer");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("./config/cloudinaryConfig");
 const cookieParser = require("cookie-parser");
+const RequestMiddleware = require("./middlewares/requestMiddleware");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -74,9 +76,10 @@ mongoose
 
 // Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/class", subjectRoute);
-app.use("/api/lesson-plan", lessonPlanRoute);
-app.use("/api/session", sessionRoutes);
+app.use("/api/class", RequestMiddleware, subjectRoute);
+app.use("/api/lesson-plan", RequestMiddleware, lessonPlanRoute);
+app.use("/api/session", RequestMiddleware, sessionRoutes);
+app.use("/api/comments", RequestMiddleware, commentRoutes);
 
 // Start server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

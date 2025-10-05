@@ -89,12 +89,12 @@ router.post("/login", async (req, res) => {
 
 // Admin sign-up
 router.post("/admin/signup", async (req, res) => {
-  const { firstName, lastName, email, password, staffId, adminKey } = req.body;
+  const { fullName, email, password, adminKey } = req.body;
 
   console.log("Received adminKey:", adminKey);
   console.log("Expected ADMIN_KEY:", ADMIN_KEY);
 
-  if (!firstName || !lastName || !email || !password || !adminKey) {
+  if (!fullName || !email || !password || !adminKey) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
@@ -110,8 +110,7 @@ router.post("/admin/signup", async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const newAdmin = await User.create({
-      firstName,
-      lastName,
+      fullName,
       email,
       password: hashedPassword,
       role: "admin",
@@ -125,10 +124,11 @@ router.post("/admin/signup", async (req, res) => {
       expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
 
-    const { password, _, ...withoutPassword } = newAdmin.toObject();
+    const { password: _, ...withoutPassword } = newAdmin.toObject();
     return res.status(201).json({
       admin: withoutPassword,
       message: "Admin account created successfully",
+      success: true,
     });
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -169,7 +169,12 @@ router.post("/admin/login", async (req, res) => {
       expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
 
-    return res.status(200).json({ admin });
+    const { password: _, ...withoutPassword } = admin.toObject();
+    return res.status(200).json({
+      admin: withoutPassword,
+      message: "Login Successful",
+      success: true,
+    });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

@@ -198,8 +198,9 @@ router.post("/logout", (req, res) => {
     httpOnly: true,
     sameSite: "strict",
     secure: process.env.NODE_ENV === "production",
+
   });
-  res.status(200).json({ message: "Logged out successfully" });
+  res.status(200).json({ message: "Logged out successfully", success:true });
 });
 
 module.exports = router;

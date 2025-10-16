@@ -49,7 +49,6 @@ router.post("/upload", upload.single("lessonPlan"), async (req, res) => {
       });
     }
 
-    // Save lesson plan in DB
     const lessonPlan = new LessonPlan({
       title,
       file: fileUrl,
@@ -380,7 +379,7 @@ router.put("/:id/update", upload.single("lessonPlan"), async (req, res) => {
 router.put("/:id/update-status", async (req, res) => {
   try {
     const { status } = req.body;
-    const { id } = req.params; // ✅ correct param
+    const { id } = req.params;
 
     const allowedStatus = ["pending", "approved", "rejected"];
     if (!allowedStatus.includes(status)) {
@@ -406,8 +405,6 @@ router.put("/:id/update-status", async (req, res) => {
     res.status(500).json({ error: err.message || err });
   }
 });
-
-//delete Lesson Plan
 
 router.delete("/:id/delete", async (req, res) => {
   try {

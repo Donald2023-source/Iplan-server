@@ -12,6 +12,7 @@ const subjectRoute = require("./routes/subjectRoute");
 const sessionRoutes = require("./routes/sessionRoutes");
 const lessonPlanRoute = require("./routes/lessonPlanRoute");
 const commentRoutes = require("./routes/commentRoutes");
+const assignSubject = require("./routes/AssignSubject");
 const multer = require("multer");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("./config/cloudinaryConfig");
@@ -80,6 +81,7 @@ app.use("/api/class", RequestMiddleware, subjectRoute);
 app.use("/api/lesson-plan", RequestMiddleware, lessonPlanRoute);
 app.use("/api/session", RequestMiddleware, sessionRoutes);
 app.use("/api/comments", RequestMiddleware, commentRoutes);
+app.use("/assign", assignSubject);
 
 // Start server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

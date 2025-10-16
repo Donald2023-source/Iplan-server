@@ -1,15 +1,18 @@
-const mongoose = require('mongoose');
+const { Schema } = require("mongoose");
+const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
+  fullName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  role: { type: String, default: 'user' },
-  staffId: { type: String, required: true, unique: true },
-  adminKey: { type: String } // New field for admin key
+  role: { type: String, default: "user" },
+  assignedSubjects: [{ type: Schema.Types.ObjectId, ref: "Subject" }],
+  classTeacher: [{ type: Schema.Types.ObjectId, ref: "Class" }],
+  adminKey: { type: String },
+  resetToken: { type: String },
+  resetTokenExpiry: { type: Date },
 });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 
 module.exports = User;

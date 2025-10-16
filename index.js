@@ -31,7 +31,12 @@ const storage = new CloudinaryStorage({
 });
 const upload = multer({ storage: storage });
 dotenv.config();
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

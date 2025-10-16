@@ -30,13 +30,8 @@ const storage = new CloudinaryStorage({
   },
 });
 const upload = multer({ storage: storage });
-
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    credentials: true,
-  })
-);
+dotenv.config();
+app.use(cors());
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -48,8 +43,9 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-      mongoUrl: "mongodb://127.0.0.1:27017/st_christophers",
-      // mongoUrl: process.env.MONGODB_URI || ,'mongodb+srv://donalddyusuf:orVEZja4ABJlb5ZP@st-christophers.trvhc.mongodb.net/?retryWrites=true&w=majority'
+      mongoUrl:
+        process.env.MONGODB_URI ||
+        "mongodb+srv://donalddyusuf:orVEZja4ABJlb5ZP@st-christophers.trvhc.mongodb.net/?retryWrites=true&w=majority",
       collectionName: "sessions",
     }),
   })
@@ -62,7 +58,8 @@ require("./auth/passport");
 
 mongoose
   .connect(
-    process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/st_christophers", //'mongodb+srv://donalddyusuf:orVEZja4ABJlb5ZP@st-christophers.trvhc.mongodb.net/?retryWrites=true&w=majority'
+    process.env.MONGODB_URI ||
+      "mongodb+srv://donalddyusuf:orVEZja4ABJlb5ZP@st-christophers.trvhc.mongodb.net/?retryWrites=true&w=majority", //'mongodb://127.0.0.1:27017/st_christophers'
 
     {
       serverSelectionTimeoutMS: 5000,

@@ -33,7 +33,7 @@ const upload = multer({ storage: storage });
 dotenv.config();
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000", "https://iplan-frontend.onrender.com"],
     credentials: true,
   })
 );

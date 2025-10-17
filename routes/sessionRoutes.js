@@ -100,7 +100,7 @@ router.post("/create-term", async (req, res) => {
     return;
   }
   try {
-    const existingTerm = Term.findOne({ name });
+    const existingTerm = Term.findOne({ name, sessionId });
     if (existingTerm) {
       res.status(400).json({
         message: "You already have a term with this name",
@@ -180,6 +180,5 @@ router.delete("/term/delete", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
 
 module.exports = router;

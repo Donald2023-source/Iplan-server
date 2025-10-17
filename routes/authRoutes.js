@@ -282,7 +282,9 @@ router.post("/logout", (req, res) => {
   try {
     const token = req.cookies.auth_token;
     if (!token) {
-      return res.status(400).json({ message: "No active session found" });
+      return res
+        .status(400)
+        .json({ message: "No active session found", token: token });
     }
     res.clearCookie("auth_token", {
       httpOnly: true,

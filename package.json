@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@getbrevo/brevo": "^3.0.1",
+    "@sendinblue/client": "^3.3.1",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
@@ -32,6 +33,7 @@
     "nodemon": "^3.1.10",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "sib-api-v3-sdk": "^8.5.0"
   }
 }

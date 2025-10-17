@@ -63,7 +63,7 @@ require("./auth/passport");
 
 mongoose
   .connect(
-    process.env.MONGODB_URI ||
+    process.env.MONGO_URL ||
       "mongodb+srv://donalddyusuf:orVEZja4ABJlb5ZP@st-christophers.trvhc.mongodb.net/?retryWrites=true&w=majority", //'mongodb://127.0.0.1:27017/st_christophers'
 
     {

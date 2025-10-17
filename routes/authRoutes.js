@@ -5,7 +5,7 @@ const User = require("../models/User");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 const router = express.Router();
-const SibApiV3Sdk = require("@getbrevo/brevo");
+const Sib = require("sib-api-v3-sdk");
 const ADMIN_KEY = "SCAHS23";
 
 require("dotenv").config();
@@ -203,15 +203,15 @@ router.post("/forgot-password", async (req, res) => {
     user.resetTokenExpiry = resetTokenExpiry;
     await user.save();
 
-    const defaultClient = SibApiV3Sdk.ApiClient.instance;
+    const defaultClient = Sib?.ApiClient?.instance;
     const apiKey = defaultClient.authentications["api-key"];
     apiKey.apiKey = process.env.BREVO_API_KEY;
 
-    const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+    const apiInstance = new Sib.TransactionalEmailsApi();
 
     const resetLink = `http://localhost:3000/auth/reset-password/${resetToken}`;
 
-    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+    const sendSmtpEmail = new Sib.SendSmtpEmail();
     sendSmtpEmail.subject = "Iplan Password Reset Request";
     sendSmtpEmail.htmlContent = `
       <div style="font-family: Arial, sans-serif; line-height: 1.6;">
@@ -234,12 +234,10 @@ router.post("/forgot-password", async (req, res) => {
     // Send email via Brevo
     await apiInstance.sendTransacEmail(sendSmtpEmail);
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Password reset email sent successfully",
-      });
+    res.status(200).json({
+      success: true,
+      message: "Password reset email sent successfully",
+    });
   } catch (error) {
     console.error("Forgot password error:", error);
     res.status(500).json({ error: error.message || "Internal server error" });

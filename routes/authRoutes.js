@@ -75,8 +75,8 @@ router.post("/login", async (req, res) => {
 
     res.cookie("auth_token", user._id.toString(), {
       httpOnly: true,
-      sameSite: "strict",
-      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      secure: false,
       expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
 
@@ -279,16 +279,20 @@ router.get("/users", async (req, res) => {
 });
 
 router.post("/logout", (req, res) => {
-  const token = req.cookies.auth_token;
-  if (!token) {
-    return res.status(400).json({ message: "No active session found" });
+  try {
+    const token = req.cookies.auth_token;
+    if (!token) {
+      return res.status(400).json({ message: "No active session found" });
+    }
+    res.clearCookie("auth_token", {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: false,
+    });
+    res.status(200).json({ message: "Logged out successfully", success: true });
+  } catch (error) {
+    res.json(400).json({ error: error.message });
   }
-  res.clearCookie("auth_token", {
-    httpOnly: true,
-    sameSite: "strict",
-    secure: process.env.NODE_ENV === "production",
-  });
-  res.status(200).json({ message: "Logged out successfully", success: true });
 });
 
 module.exports = router;

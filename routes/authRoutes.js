@@ -209,7 +209,7 @@ router.post("/forgot-password", async (req, res) => {
 
     const apiInstance = new Sib.TransactionalEmailsApi();
 
-    const resetLink = `http://localhost:3000/auth/reset-password/${resetToken}`;
+    const resetLink = `https://iplan-red.vercel.app/auth/reset-password/${resetToken}`;
 
     const sendSmtpEmail = new Sib.SendSmtpEmail();
     sendSmtpEmail.subject = "Iplan Password Reset Request";

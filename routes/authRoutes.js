@@ -204,7 +204,9 @@ router.post("/forgot-password", async (req, res) => {
     await user.save();
 
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
+      secure: false,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -214,15 +216,15 @@ router.post("/forgot-password", async (req, res) => {
     const resetLink = `http://192.168.0.237:3000/auth/reset-password/${resetToken}`;
 
     await transporter.sendMail({
-      from: `"Iplan Support" <${process.env.EMAIL_USER}>`,
+      from: process.env.EMAIL_FROM,
       to: email,
       subject: "Iplan Password Reset Request",
       html: `
-        <h2>Password Reset</h2>
-        <p>You requested to reset your password. Click the link below to reset it:</p>
-        <a href="${resetLink}" target="_blank">${resetLink}</a>
-        <p>This link will expire in 15 minutes.</p>
-      `,
+    <h2>Password Reset</h2>
+    <p>Click the link below to reset your password:</p>
+    <a href="${resetLink}" target="_blank">${resetLink}</a>
+    <p>This link will expire in 15 minutes.</p>
+  `,
     });
 
     res.status(200).json({

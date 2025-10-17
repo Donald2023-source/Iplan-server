@@ -279,22 +279,20 @@ router.get("/users", async (req, res) => {
 });
 
 router.post("/logout", (req, res) => {
-  try {
-    const token = req.cookies.auth_token;
-    if (!token) {
-      return res
-        .status(400)
-        .json({ message: "No active session found", token: token });
-    }
-    res.clearCookie("auth_token", {
-      httpOnly: true,
-      sameSite: "none",
-      secure: process.env.NODE_ENV === "production",
-    });
-    res.status(200).json({ message: "Logged out successfully", success: true });
-  } catch (error) {
-    res.json(400).json({ error: error.message });
+  const token = req.cookies?.auth_token;
+  if (!token) {
+    return res.status(400).json({ message: "No active session found" });
   }
+
+  res.clearCookie("auth_token", {
+    httpOnly: true,
+    sameSite: "none",
+    secure: true,
+  });
+
+  return res
+    .status(200)
+    .json({ message: "Logged out successfully", success: true });
 });
 
 module.exports = router;

@@ -185,7 +185,6 @@ router.post("/admin/login", async (req, res) => {
 
 router.post("/forgot-password", async (req, res) => {
   const { email } = req.body;
-  console.log(process.env.BREVO_API_KEY);
 
   if (!email) {
     return res.status(400).json({ message: "Email is required" });

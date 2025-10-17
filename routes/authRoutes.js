@@ -5,7 +5,7 @@ const User = require("../models/User");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 const router = express.Router();
-
+const SibApiV3Sdk = require("@getbrevo/brevo");
 const ADMIN_KEY = "SCAHS23";
 
 require("dotenv").config();
@@ -196,43 +196,53 @@ router.post("/forgot-password", async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    // Generate reset token
     const resetToken = crypto.randomBytes(32).toString("hex");
-    const resetTokenExpiry = Date.now() + 10 * 60 * 1000;
-
+    const resetTokenExpiry = Date.now() + 15 * 60 * 1000; // 15 mins
     user.resetToken = resetToken;
     user.resetTokenExpiry = resetTokenExpiry;
     await user.save();
 
-    const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: process.env.EMAIL_PORT,
-      secure: false,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+    const defaultClient = SibApiV3Sdk.ApiClient.instance;
+    const apiKey = defaultClient.authentications["api-key"];
+    apiKey.apiKey = process.env.BREVO_API_KEY;
 
-    const resetLink = `http://192.168.0.237:3000/auth/reset-password/${resetToken}`;
+    const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
-    await transporter.sendMail({
-      from: process.env.EMAIL_FROM,
-      to: email,
-      subject: "Iplan Password Reset Request",
-      html: `
-    <h2>Password Reset</h2>
-    <p>Click the link below to reset your password:</p>
-    <a href="${resetLink}" target="_blank">${resetLink}</a>
-    <p>This link will expire in 15 minutes.</p>
-  `,
-    });
+    const resetLink = `http://localhost:3000/auth/reset-password/${resetToken}`;
 
-    res.status(200).json({
-      message: "Password reset link sent to your email",
-      success: true,
-    });
+    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+    sendSmtpEmail.subject = "Iplan Password Reset Request";
+    sendSmtpEmail.htmlContent = `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <h2>Password Reset Request</h2>
+        <p>Hello ${user.fullName || "User"},</p>
+        <p>We received a request to reset your Iplan password. Click below to continue:</p>
+        <a href="${resetLink}" target="_blank" 
+          style="display:inline-block;background:#4CAF50;color:white;padding:10px 16px;text-decoration:none;border-radius:6px;">
+          Reset Password
+        </a>
+        <p>This link will expire in 15 minutes. If you didn't request this, please ignore this email.</p>
+      </div>
+    `;
+    sendSmtpEmail.sender = {
+      name: "Iplan Support",
+      email: "thedistinctsound@gmail.com",
+    };
+    sendSmtpEmail.to = [{ email }];
+
+    // Send email via Brevo
+    await apiInstance.sendTransacEmail(sendSmtpEmail);
+
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Password reset email sent successfully",
+      });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Forgot password error:", error);
+    res.status(500).json({ error: error.message || "Internal server error" });
   }
 });
 

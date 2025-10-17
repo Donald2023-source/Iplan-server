@@ -100,7 +100,7 @@ router.post("/create-term", async (req, res) => {
     return;
   }
   try {
-    const existingTerm = Term.findOne({ name, sessionId });
+    const existingTerm = await Term.findOne({ name, sessionId });
     if (existingTerm) {
       res.status(400).json({
         message: "You already have a term with this name",

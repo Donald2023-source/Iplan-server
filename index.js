@@ -50,7 +50,7 @@ app.use(
     store: MongoStore.create({
       mongoUrl:
         process.env.MONGODB_URI ||
-        "mongodb+srv://donalddyusuf:orVEZja4ABJlb5ZP@st-christophers.trvhc.mongodb.net/?retryWrites=true&w=majority",
+        "mongodb://127.0.0.1:27017/st_christophers",
       collectionName: "sessions",
     }),
   })
@@ -64,7 +64,7 @@ require("./auth/passport");
 mongoose
   .connect(
     process.env.MONGODB_URI ||
-      "mongodb+srv://donalddyusuf:orVEZja4ABJlb5ZP@st-christophers.trvhc.mongodb.net/?retryWrites=true&w=majority", //'mongodb://127.0.0.1:27017/st_christophers'
+      "mongodb://127.0.0.1:27017/st_christophers", //'mongodb+srv://donalddyusuf:orVEZja4ABJlb5ZP@st-christophers.trvhc.mongodb.net/?retryWrites=true&w=majority'
 
     {
       serverSelectionTimeoutMS: 5000,

@@ -409,12 +409,18 @@ router.put("/:id/update-status", async (req, res) => {
 
 router.delete("/:id/delete", async (req, res) => {
   try {
-    const lessonPlan = await LessonPlan.findByIdAndDelete(req.params.id);
+    const lessonPlan = await LessonPlan.findById(req.params.id);
     if (!lessonPlan) {
       return res.status(404).json({ error: "Lesson plan not found" });
     }
 
-    await cloudinary.uploader.destroy(lessonPlan.fileId);
+    // Delete file from Cloudinary if it exists
+    if (lessonPlan.fileId) {
+      await cloudinary.uploader.destroy(lessonPlan.fileId);
+    }
+
+    // Delete from MongoDB
+    await LessonPlan.findByIdAndDelete(req.params.id);
 
     res.status(200).json({
       message: "Lesson plan and associated file deleted successfully",
@@ -424,5 +430,6 @@ router.delete("/:id/delete", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 module.exports = router;

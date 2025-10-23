@@ -181,4 +181,25 @@ router.delete("/term/delete", async (req, res) => {
   }
 });
 
+router.delete("/:sessionId/delete", async (req, res) => {
+  const { sessionId } = req.params;
+  const { name } = req.body;
+
+  try {
+    const session = await Session.findByIdAndDelete(sessionId);
+    if (!session) {
+      return res
+        .status(404)
+        .json({ error: "Session not found", success: false });
+    }
+
+    await Term.deleteMany({ sessionId });
+    res
+      .status(200)
+      .json({ message: "Session deleted successfully", success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message, success: false });
+  }
+});
+
 module.exports = router;
